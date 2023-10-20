@@ -14,48 +14,46 @@ CheckPythonMinimalVersion(3, 11)
 #==========================================================================================#
 
 # Чтение настроек.
-Settings = ReadJSON("Settings.json")
+# Settings = ReadJSON("Settings.json")
 
 #==========================================================================================#
 # >>>>> ОБРАБОТКА ДАННЫХ <<<<< #
 #==========================================================================================#
 
-# Содержимое выбранной папки.
-Content = os.listdir("C:/Data storage/Photos/From phone")
 
-# Создание новой папки.
-def CreateNewFolder():
+PATH = "C:/Data storage/Photos/From phone/"
 
+# Перемещение медиафайлов в папки.
+def MovingMediaFiles():
+    # Содержимое выбранной папки.
+    Content = os.listdir(PATH)
     for UnitContent in Content:
         # Выбор элементов папки заканчивающихся на jpg/mp4.
         if UnitContent.endswith('jpg') or UnitContent.endswith('mp4'):
-            # Разделение названия медиафайла по _.
-            BreakdownUnitContent = UnitContent.split('_')
-            # Выбор части названия с датой.
-            NameNewFolder = BreakdownUnitContent[1]
-            # Создание папки, если таковой не имеется.
-            if not os.path.exists(f'C:/Data storage/Photos/From phone/{NameNewFolder}'):
-                os.makedirs(f'C:/Data storage/Photos/From phone/{NameNewFolder}')
+            # Создание данных файла.
+            FileData = ParseFile(UnitContent)
+            # Если папки с названиемм файла не найдено, то создать ее.
+            if os.path.exists(PATH + FileData["date"]) == False:
+                os.makedirs(PATH + FileData["date"])
+            # Перемещение файла в папку. 
+            os.replace(PATH + UnitContent, PATH + FileData["date"] + "/" + UnitContent)
+   
+              
+
+# Хранение данных о файле.
+def ParseFile(Filename: str)->dict:
+    # Словарь с данными файла.
+    Result = {
+        'filename': None,
+        "extension": Filename.split(".")[-1],
+        "date": None,
+        "time": None
+    }
+    # Получение данных для словаря.
+    Result['filename'] = Filename.replace("." + Result['extension'], "")
+    Result['date'] =  Result['filename'].split("_")[1]
+    Result['time'] =  Result['filename'].split("_")[2]
+    return Result
 
 
-def MovingMediaFiles():
-    NameMediaFiles = dict()
-    NameFolders = list()
-    for UnitContent in Content:
-        if os.path.isdir(f'C:/Data storage/Photos/From phone/{UnitContent}'):
-            NameFolders.append(UnitContent)
-            print(NameFolders)
-        if UnitContent.endswith('jpg') or UnitContent.endswith('mp4'):
-            BreakdownUnitContent = UnitContent.split('.')
-            NameDataMediaFiles = BreakdownUnitContent[0]
-            SuffixesMediaFiles = BreakdownUnitContent[1]
-            NameMediaFiles[NameDataMediaFiles]= SuffixesMediaFiles
-            for NameFile in NameMediaFiles.keys():
-                if NameFile in NameFolders:
-                    print(f"{NameMediaFiles.keys}{NameMediaFiles.values}", f"{NameMediaFiles.keys}/{NameMediaFiles.keys}{NameMediaFiles.values}")
-                    os.replace(f"{NameMediaFiles.keys}{NameMediaFiles.values}", f"{NameMediaFiles.keys}/{NameMediaFiles.keys}{NameMediaFiles.values}")
-        
-
-
-CreateNewFolder()
 MovingMediaFiles()
