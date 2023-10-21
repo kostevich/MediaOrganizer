@@ -1,7 +1,9 @@
 #!/usr/bin/python
 from dublib.Methods import CheckPythonMinimalVersion, ReadJSON
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout
 
 import os 
+import sys
 #==========================================================================================#
 # >>>>> ИНИЦИАЛИЗАЦИЯ СКРИПТА <<<<< #
 #==========================================================================================#
@@ -19,6 +21,31 @@ CheckPythonMinimalVersion(3, 11)
 #==========================================================================================#
 # >>>>> ОБРАБОТКА ДАННЫХ <<<<< #
 #==========================================================================================#
+
+
+# Создадим приложение наследующее функции класса QWidget.
+class Window(QWidget):
+    # Конструктор приложения.
+    def __init__(self):
+        super().__init__()
+        # Размер окна приложения.
+        self.resize(900, 650)
+        # Название приложения.
+        self.setWindowTitle("MediaOrganizer")
+        # Фон приложения.
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+       
+
+        
+# Создаем экземпляр класса.
+app = QApplication(sys.argv)
+# Создаем виджет.
+window = Window()
+# Открытие окна приложения.
+window.show()
+# Выход из приложения.
+sys.exit(app.exec())
 
 
 PATH = "C:/Data storage/Photos/From phone/"
