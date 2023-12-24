@@ -72,14 +72,15 @@ def MovingMediaFiles():
         if UnitContent.endswith('jpg') or UnitContent.endswith('mp4'):
             # Создание данных файла.
             FileData = ParseFile(UnitContent)
+            try:
+                # Если папки с названиемм файла не найдено, то создать ее.
+                if os.path.exists(Settings["PATH"] + FileData["date"]) == False:
+                    os.makedirs(Settings["PATH"] + FileData["date"])
 
-            # Если папки с названиемм файла не найдено, то создать ее.
-            if os.path.exists(Settings["PATH"] + FileData["date"]) == False:
-                os.makedirs(Settings["PATH"] + FileData["date"])
-
-            # Перемещение файла в папку. 
-            os.replace(Settings["PATH"] + UnitContent, Settings["PATH"] + FileData["date"] + "/" + UnitContent)
-   
+                # Перемещение файла в папку. 
+                os.replace(Settings["PATH"] + UnitContent, Settings["PATH"] + FileData["date"] + "/" + UnitContent)
+            except:
+                pass
 #==========================================================================================#
 # >>>>> ХРАНЕНИЕ ДАННЫХ ФАЙЛОВ <<<<< #
 #==========================================================================================#             
@@ -95,9 +96,12 @@ def ParseFile(Filename: str)->dict:
     }
 
     # Получение данных для словаря.
-    Result['filename'] = Filename.replace("." + Result['extension'], "")
-    Result['date'] =  Result['filename'].split("_")[1]
-    Result['time'] =  Result['filename'].split("_")[2]
+    try:
+        Result['filename'] = Filename.replace("." + Result['extension'], "")
+        Result['date'] =  Result['filename'].split("_")[1]
+        Result['time'] =  Result['filename'].split("_")[2]
+    except:
+        pass
     
     return Result
 
